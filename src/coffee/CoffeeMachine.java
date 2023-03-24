@@ -34,14 +34,13 @@ public class CoffeeMachine {
                 case 2 -> this.displayResources();
                 case 3 -> this.displayBeverages();
                 case 4 -> this.buyDrink();
-                case 5 -> {
-                    this.addBeverage();
-                    System.out.println(this.beverages.get(0));
-                }
+                case 5 -> this.addBeverage();
                 case 6 -> this.addResources();
                 default -> machine_is_on = false;
             }
         }
+
+        System.out.println("Bye!");
     }
 
     //add a beverage to the list
@@ -57,7 +56,6 @@ public class CoffeeMachine {
         double coffee = in.nextDouble();
         Double price = milk/100 + water/200 + coffee/50;
         Beverage newBeverage = new Beverage(name, price, milk, water, coffee);
-        System.out.println(newBeverage.getName());
         this.beverages.add(newBeverage);
         System.out.println("New beverage added: " + name);
     }
@@ -79,32 +77,36 @@ public class CoffeeMachine {
             System.out.println("No beverages. We are sorry!");
         }else {
             for(int i = 0; i < this.beverages.size(); i++) {
-                System.out.println((i + 1) + ". " + this.beverages.get(i).getName());
-                System.out.println("$" + this.beverages.get(i).getPrice());
+                System.out.print((i + 1) + ". " + this.beverages.get(i).getName());
+                System.out.println(" $" + this.beverages.get(i).getPrice());
             }
         }
     }
 
     //buy a drink
     public void buyDrink() {
-        System.out.println("\nType the number of the drink you want");
-        Scanner in = new Scanner(System.in);
-        int typeOfDrink = in.nextInt() - 1;
-        if(typeOfDrink >= this.beverages.size() || typeOfDrink < 0) {
-            System.out.println("Sorry, we do not have that drink");
-        } else {
-            Double milkNeeded = this.beverages.get(typeOfDrink).getMilkAmount();
-            Double waterNeeded = this.beverages.get(typeOfDrink).getWaterAmount();
-            Double coffeeNeeded = this.beverages.get(typeOfDrink).getCoffeeAmount();
-            Double price = this.beverages.get(typeOfDrink).getPrice();
-            if (this.resources.checkEnoughResources(milkNeeded, waterNeeded, coffeeNeeded)) {
-                System.out.println("That will be $" + price);
-                this.pay(price);
-                this.resources.useResources(milkNeeded, waterNeeded, coffeeNeeded);
-                System.out.println("Here is your drink, enjoy it!");
+        if(!this.beverages.isEmpty()) {
+            System.out.println("\nType the number of the drink you want");
+            Scanner in = new Scanner(System.in);
+            int typeOfDrink = in.nextInt() - 1;
+            if (typeOfDrink >= this.beverages.size() || typeOfDrink < 0) {
+                System.out.println("Sorry, we do not have that drink");
             } else {
-                System.out.println("Sorry, we do not have enough resources for this drink");
+                Double milkNeeded = this.beverages.get(typeOfDrink).getMilkAmount();
+                Double waterNeeded = this.beverages.get(typeOfDrink).getWaterAmount();
+                Double coffeeNeeded = this.beverages.get(typeOfDrink).getCoffeeAmount();
+                Double price = this.beverages.get(typeOfDrink).getPrice();
+                if (this.resources.checkEnoughResources(milkNeeded, waterNeeded, coffeeNeeded)) {
+                    System.out.println("That will be $" + price);
+                    this.pay(price);
+                    this.resources.useResources(milkNeeded, waterNeeded, coffeeNeeded);
+                    System.out.println("Here is your drink, enjoy it!");
+                } else {
+                    System.out.println("Sorry, we do not have enough resources for this drink");
+                }
             }
+        } else {
+            System.out.println("No beverages. We are sorry!");
         }
     }
 
